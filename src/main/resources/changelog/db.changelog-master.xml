@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+          http://www.liquibase.org/xml/ns/dbchangelog-ext
+http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+          http://www.liquibase.org/xml/ns/pro
+http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.1.xsd">
+    <changeSet id="create-user" author="elmaddin">
+        <createTable tableName="user">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="varchar(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(250)" />
+            <column name="password" type="varchar(250)" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-book" author="elmaddin">
+        <createTable tableName="book">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(250)" />
+            <column name="price" type="int" />
+            <column name="author" type="varchar(250)" />
+            <column name="page_count" type="int" />
+            <column name="user_id" type="java.lang.Long" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-role" author="elmaddin">
+        <createTable tableName="role">
+            <column name="id" type="java.lang.Long" autoIncrement="true" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(250)" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-user-role" author="elmaddin">
+        <createTable tableName="user_role">
+            <column name="user_id" type="java.lang.Long" />
+            <column name="role_id" type="java.lang.Long" />
+        </createTable>
+    </changeSet>
+
+    <changeSet author="elmaddin" id="add_fk_constraint_to_book_table">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="book"
+                                 constraintName="fk_book_user"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+    </changeSet>
+
+    <changeSet author="elmaddin" id="add_user_id_fk_constraint_to_book-user_table">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_role"
+                                 constraintName="fk_userId_role"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+    </changeSet>
+
+    <changeSet author="elmaddin" id="add_role_id_fk_constraint_to_book-user_table">
+        <addForeignKeyConstraint baseColumnNames="role_id"
+                                 baseTableName="user_role"
+                                 constraintName="fk_user_roleId"
+                                 referencedColumnNames="id"
+                                 referencedTableName="role"/>
+    </changeSet>
+
+<!--    insert-->
+    <changeSet  author="elmaddin"  id="insert ADMIN and USER roles">
+        <insert
+                tableName="role">
+            <column  name="name"  value="ADMIN"/>
+        </insert>
+
+        <insert
+                tableName="role">
+            <column  name="name"  value="USER"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

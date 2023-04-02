@@ -1,0 +1,24 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: E7LEXCJ6
+      MYSQL_DATABASE: TaskForWork
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./liquibase:/liquibase
+  app:
+    image: 'library:latest'
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/TaskForWork
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: E7LEXCJ6
+    command: ["./wait-for-it.sh", "db:3306", "--", "liquibase", "changelog/db.changelog-master.xml", "url=jdbc:mysql://db:3306/TaskForWork", "username=root", "--password=E7LEXCJ6", "update"]
